@@ -1,2 +1,1 @@
-# docs
-API Documents
+# Time Lapse API - Documentation
