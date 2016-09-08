@@ -1,0 +1,261 @@
+swagger: '2.0'
+
+info:
+  version: "0.0.1"
+  title: Time-lapse API
+
+paths:
+  /api/account:
+    get:
+      summary: Account Information
+      description: |
+        Retrieve account information including user, client and project details and cameras categorized by project.
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            properties: 
+              status:
+                type: integer
+              request_time:
+                type: integer
+              result:
+                $ref: '#/definitions/AccountInformation'
+
+        default:
+          description: Unexpected Error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+  /api/dates/project/{project_id}/camera/{camera_id}:
+    parameters:
+      - $ref: '#/parameters/project_id'
+      - $ref: '#/parameters/camera_id'
+      - $ref: '#/parameters/format'
+      - $ref: '#/parameters/date_format'
+    get:
+      summary: Date Range
+      description: |
+        Retrieve the range of dates over which a particular camera has captured images, this includes disabled dates for which no images were captured.
+      responses:
+        200:
+          description: Sucessful response
+          schema:
+            type: object
+            properties: 
+              status:
+                type: integer
+              request_time:
+                type: integer
+              result:
+                type: object
+                properties:
+                  start:
+                    $ref: '#/definitions/UnixTimestamp'
+                  finish:
+                    $ref: '#/definitions/UnixTimestamp'
+                  disabled:
+                    type: array
+                    items:
+                      $ref: '#/definitions/UnixTimestamp'
+            
+  /api/dates/project/{project_id}/camera/{camera_id}/{date}:
+    parameters:
+      - $ref: '#/parameters/project_id'
+      - $ref: '#/parameters/camera_id'
+      - $ref: '#/parameters/date'
+      - $ref: '#/parameters/format'
+      - $ref: '#/parameters/date_format'
+    get:
+      summary: Date Range
+      description: |
+        Retrieve the range of dates over which a particular camera has captured images, this includes disabled dates for which no images were captured.
+      responses:
+        200:
+          description: Sucessful response
+          schema:
+            type: object
+            properties: 
+              status:
+                type: integer
+              request_time:
+                type: integer
+              result:
+                type: array
+                items:
+                  $ref: '#/definitions/Image'
+  /api/images/project/{project_id}/camera/{camera_id}/{image_name}:
+    parameters:
+      - $ref: '#/parameters/project_id'
+      - $ref: '#/parameters/camera_id'
+      - $ref: '#/parameters/image_name'
+      - $ref: '#/parameters/image_type'
+    get:
+      summary: Date Range
+      description: |
+        Retrieve image assets of a particular camera.
+      responses:
+        200:
+          description: Sucessful response
+  /api/timelapse/project/{project_id}/camera/{camera_id}:
+    parameters:
+      - $ref: '#/parameters/project_id'
+      - $ref: '#/parameters/camera_id'
+      - $ref: '#/parameters/video_type'
+      - $ref: '#/parameters/video_format'
+    get:
+      summary: Date Range
+      description: |
+        Retrieve image assets of a particular camera.
+      responses:
+        200:
+          description: Sucessful response
+# Parameters
+parameters:
+  project_id:
+    name: project_id
+    in: path
+    description: Identifies a project for a particular client
+    type: number
+    required: true
+  camera_id:
+    name: camera_id
+    in: path
+    description: Identifies a camera for a particular project
+    type: number
+    required: true
+  date:
+    name: date
+    in: path
+    description: The image date to look up
+    required: true
+    type: integer
+  image_name:
+    name: image_name
+    in: path
+    description: The name of the requested image as returned by the Date endpoint
+    required: true
+    type: string
+  image_type:
+    name: type
+    in: query
+    description: Size of image to return [standard, thumb]
+    type: string
+    default: standard
+  video_type:
+    name: type
+    in: query
+    description: Time-lapse asset type [video, poster]
+    type: string
+    default: video
+  video_format:
+    name: video_format
+    in: query
+    description: Format for the returned data [mp4, webm]
+    type: string
+    default: mp4
+  date_format:
+    name: date_format
+    in: query
+    description: The format in which to return dates [yymmdd, unix]
+    required: false
+    type: string
+    default: yymmdd
+  format:
+    name: format
+    in: query
+    description: Format for the returned data [json, xml]
+    required: false
+    type: string
+    default: json
+    
+# Definitions
+definitions:
+  AccountInformation:
+    type: object
+    properties:
+      user: 
+        $ref: '#/definitions/User'
+      client:
+        $ref: '#/definitions/Client'
+  User:
+    type: object
+    properties:
+      username:
+        type: string
+      settings:
+        $ref: '#/definitions/UserSettings'
+  UserSettings:
+    type: object
+    properties:
+      timelapse:
+        type: boolean
+  Client:
+    type: object
+    properties:
+      # Unsure of the difference between logo and logo_url as the former contains a URL in some examples
+      logo:
+        type: string
+      logo_url:
+        type: string
+      name:
+        type: string
+      project:
+        type: array
+        items:
+          $ref: '#/definitions/Project'
+  Project:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      coordinates:
+        type: string
+      location:
+        type: string
+      # Unsure of the function here. The example lists this value as "no"
+      logo:
+        type: string
+      camera:
+        type: array
+        items:
+          $ref: '#/definitions/Camera'
+  Camera:
+    type: object
+    properties:
+      id:
+        type: integer
+  UnixTimestamp:
+    type: integer
+  Image:
+    type: object
+    properties:
+      image:
+        type: string
+      date:
+        type: string
+      time:
+        type: string
+      exif:
+        $ref: '#/definitions/Exif'
+  Exif:
+    type: object
+    properties:
+      ShutterSpeed:
+        type: number
+        format: float
+      Aperture:
+        type: number
+        format: float
+      CreatedDate:
+        type: string
+      Width:
+        type: number
+      Height: 
+        type: number
+    
