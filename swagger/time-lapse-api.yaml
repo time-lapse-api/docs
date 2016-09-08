@@ -70,9 +70,9 @@ paths:
       - $ref: '#/parameters/format'
       - $ref: '#/parameters/date_format'
     get:
-      summary: Date Range
+      summary: Images by Date
       description: |
-        Retrieve the range of dates over which a particular camera has captured images, this includes disabled dates for which no images were captured.
+        Retrieve a timestamped list of images a particular camera captured over a specified date.
       responses:
         200:
           description: Sucessful response
