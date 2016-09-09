@@ -1,7 +1,7 @@
 swagger: '2.0'
 
 info:
-  version: "0.0.1"
+  version: "0.0.2"
   title: Time-lapse API
 
 paths:
@@ -9,7 +9,7 @@ paths:
     get:
       summary: Account Information
       description: |
-        Retrieve account information including user, client and project details and cameras categorized by project.
+        Retrieve account information. This includes info for the current user, any client accounts associated with this user, a list of projects belonging to the client, and camera details for these projects.
       responses:
         200:
           description: Successful response
@@ -22,14 +22,13 @@ paths:
                 type: integer
               result:
                 $ref: '#/definitions/AccountInformation'
+        400:
+          description: Bad request - check header and URL
+        401:
+          description: Unauthorized - username or password invalid
+        500:
+          description: Internal error - please try again later
 
-        default:
-          description: Unexpected Error
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
   /api/dates/project/{project_id}/camera/{camera_id}:
     parameters:
       - $ref: '#/parameters/project_id'
@@ -42,7 +41,7 @@ paths:
         Retrieve the range of dates over which a particular camera has captured images, this includes disabled dates for which no images were captured.
       responses:
         200:
-          description: Sucessful response
+          description: Successful response
           schema:
             type: object
             properties: 
@@ -61,6 +60,14 @@ paths:
                     type: array
                     items:
                       $ref: '#/definitions/UnixTimestamp'
+        400:
+          description: Bad request - check header and URL
+        401:
+          description: Unauthorized - username or password invalid
+        403:
+          description: Forbidden - access to this resource is not allowed for this user
+        500:
+          description: Internal error - please try again later
             
   /api/dates/project/{project_id}/camera/{camera_id}/{date}:
     parameters:
@@ -75,7 +82,7 @@ paths:
         Retrieve a timestamped list of images a particular camera captured over a specified date.
       responses:
         200:
-          description: Sucessful response
+          description: Successful response
           schema:
             type: object
             properties: 
@@ -87,6 +94,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/Image'
+        400:
+          description: Bad request - check header and URL
+        401:
+          description: Unauthorized - username or password invalid
+        403:
+          description: Forbidden - access to this resource is not allowed for this user
+        500:
+          description: Internal error - please try again later
   /api/images/project/{project_id}/camera/{camera_id}/{image_name}:
     parameters:
       - $ref: '#/parameters/project_id'
@@ -96,10 +111,20 @@ paths:
     get:
       summary: Date Range
       description: |
-        Retrieve image assets of a particular camera.
+        Retrieve the binary data for a specified image. The HTTP response format is 'image/jpeg'.
       responses:
         200:
-          description: Sucessful response
+          description: Successful response
+        400:
+          description: Bad request - check header and URL
+        401:
+          description: Unauthorized - username or password invalid
+        403:
+          description: Forbidden - access to this resource is not allowed for this user
+        404:
+          description: Not Found - could not find the requested image
+        500:
+          description: Internal error - please try again later
   /api/timelapse/project/{project_id}/camera/{camera_id}:
     parameters:
       - $ref: '#/parameters/project_id'
@@ -109,10 +134,20 @@ paths:
     get:
       summary: Date Range
       description: |
-        Retrieve image assets of a particular camera.
+        Retrieve the binary data for a specified timelapse film. The HTTP response format is 'video/mp4' or 'video/webm' depending on the video_format parameter.
       responses:
         200:
-          description: Sucessful response
+          description: Successful response
+        400:
+          description: Bad request - check header and URL
+        401:
+          description: Unauthorized - username or password invalid
+        403:
+          description: Forbidden - access to this resource is not allowed for this user
+        404:
+          description: Not Found - could not find the requested video
+        500:
+          description: Internal error - please try again later
 # Parameters
 parameters:
   project_id:
