@@ -5,7 +5,7 @@ info:
   title: Time-lapse API
 
 paths:
-  /api/account:
+  /api/1.0/account:
     get:
       summary: Account Information
       description: |
@@ -29,7 +29,7 @@ paths:
         500:
           description: Internal error - please try again later
 
-  /api/dates/project/{project_id}/camera/{camera_id}:
+  /api/1.0/dates/project/{project_id}/camera/{camera_id}:
     parameters:
       - $ref: '#/parameters/project_id'
       - $ref: '#/parameters/camera_id'
@@ -69,7 +69,7 @@ paths:
         500:
           description: Internal error - please try again later
             
-  /api/dates/project/{project_id}/camera/{camera_id}/{date}:
+  /api/1.0/dates/project/{project_id}/camera/{camera_id}/{date}:
     parameters:
       - $ref: '#/parameters/project_id'
       - $ref: '#/parameters/camera_id'
@@ -102,7 +102,7 @@ paths:
           description: Forbidden - access to this resource is not allowed for this user
         500:
           description: Internal error - please try again later
-  /api/images/project/{project_id}/camera/{camera_id}/{image_name}:
+  /api/1.0/images/project/{project_id}/camera/{camera_id}/{image_name}:
     parameters:
       - $ref: '#/parameters/project_id'
       - $ref: '#/parameters/camera_id'
@@ -125,7 +125,7 @@ paths:
           description: Not Found - could not find the requested image
         500:
           description: Internal error - please try again later
-  /api/timelapse/project/{project_id}/camera/{camera_id}:
+  /api/1.0/timelapse/project/{project_id}/camera/{camera_id}:
     parameters:
       - $ref: '#/parameters/project_id'
       - $ref: '#/parameters/camera_id'
