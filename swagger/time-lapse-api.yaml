@@ -1,7 +1,7 @@
 swagger: '2.0'
 
 info:
-  version: "0.0.2"
+  version: "0.0.3"
   title: Time-lapse API
 
 paths:
@@ -16,8 +16,6 @@ paths:
           schema:
             type: object
             properties: 
-              status:
-                type: integer
               request_time:
                 type: integer
               result:
@@ -45,8 +43,6 @@ paths:
           schema:
             type: object
             properties: 
-              status:
-                type: integer
               request_time:
                 type: integer
               result:
@@ -86,8 +82,6 @@ paths:
           schema:
             type: object
             properties: 
-              status:
-                type: integer
               request_time:
                 type: integer
               result:
