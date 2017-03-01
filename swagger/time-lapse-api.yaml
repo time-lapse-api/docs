@@ -1,7 +1,7 @@
 swagger: '2.0'
 
 info:
-  version: "0.0.3"
+  version: "0.0.4"
   title: Time-lapse API
 
 paths:
@@ -32,7 +32,6 @@ paths:
       - $ref: '#/parameters/project_id'
       - $ref: '#/parameters/camera_id'
       - $ref: '#/parameters/format'
-      - $ref: '#/parameters/date_format'
     get:
       summary: Date Range
       description: |
@@ -49,13 +48,13 @@ paths:
                 type: object
                 properties:
                   start:
-                    $ref: '#/definitions/UnixTimestamp'
+                    $ref: '#/definitions/ISO8601_Date'
                   finish:
-                    $ref: '#/definitions/UnixTimestamp'
+                    $ref: '#/definitions/ISO8601_Date'
                   disabled:
                     type: array
                     items:
-                      $ref: '#/definitions/UnixTimestamp'
+                      $ref: '#/definitions/ISO8601_Date'
         400:
           description: Bad request - check header and URL
         401:
@@ -71,7 +70,6 @@ paths:
       - $ref: '#/parameters/camera_id'
       - $ref: '#/parameters/date'
       - $ref: '#/parameters/format'
-      - $ref: '#/parameters/date_format'
     get:
       summary: Images by Date
       description: |
@@ -159,9 +157,9 @@ parameters:
   date:
     name: date
     in: path
-    description: The image date to look up
+    description: The image date to look up in ISO8601 format (eg YYY-MM-DD)
     required: true
-    type: integer
+    type: string
   image_name:
     name: image_name
     in: path
@@ -186,13 +184,6 @@ parameters:
     description: Format for the returned data [mp4, webm]
     type: string
     default: mp4
-  date_format:
-    name: date_format
-    in: query
-    description: The format in which to return dates [yymmdd, unix]
-    required: false
-    type: string
-    default: yymmdd
   format:
     name: format
     in: query
@@ -259,17 +250,17 @@ definitions:
     properties:
       id:
         type: integer
-  UnixTimestamp:
-    type: integer
+  ISO8601_Date:
+    type: string
+  ISO8601_DateTime:
+    type: string
   Image:
     type: object
     properties:
       image:
         type: string
-      date:
-        type: string
-      time:
-        type: string
+      datetime:
+        $ref: '#/definitions/ISO8601_DateTime'
       exif:
         $ref: '#/definitions/Exif'
   Exif:
